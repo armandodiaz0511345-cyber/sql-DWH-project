@@ -1,0 +1,168 @@
+/*
+
+The purpose of this script is to repopulate the information inside the tables set up by the ddl_bronze.sql file.
+
+Run this script if there is significant changes to the data inside the tables in the bronze layer
+
+*/
+
+--==========BRONZE FULL LOAD STORED PROCEDURE=====----
+CREATE OR ALTER PROCEDURE bronze.load_bronze AS
+BEGIN
+	DECLARE @start_time DATETIME2, @end_time DATETIME2, @start_time_source DATETIME2, @end_time_source DATETIME2, @start_time_bronze_layer DATETIME2, @end_time_bronze_layer DATETIME2
+	BEGIN TRY
+		PRINT '==========================================';
+		PRINT 'Loading Bronze Layer (TRUNC & BULK INSERT)';
+		PRINT '==========================================';
+		--========FULL LOADS (crm and erp)===========--
+		SET @start_time_bronze_layer = GETDATE();
+		--==============CRM FULL LOADS=============--
+
+		PRINT '==================';
+		PRINT 'Loading CRM Tables';
+		PRINT '==================';
+
+		SET @start_time_source = GETDATE();
+		
+		SET @start_time = GETDATE();
+		-- First empty the table
+		TRUNCATE TABLE bronze.crm_cust_info;
+		-- then full load the table.
+		BULK INSERT bronze.crm_cust_info
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD cust_info DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+
+		--SELECT * from bronze.crm_cust_info
+
+
+
+		SET @start_time = GETDATE();
+		TRUNCATE TABLE bronze.crm_prd_info
+		BULK INSERT bronze.crm_prd_info
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD prd_info DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+		--SELECT * from bronze.crm_prd_info
+		
+		SET @start_time = GETDATE();
+		TRUNCATE TABLE bronze.crm_sales_details
+		BULK INSERT bronze.crm_sales_details
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD sales_details DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+		--SELECT * from bronze.crm_sales_details
+		SET @end_time_source = GETDATE();
+		
+		PRINT 'TIME TO LOAD CRM DATA: ' + Cast(DATEDIFF(second, @start_time_source,@end_time_source) as NVARCHAR) + ' Seconds.'
+
+
+		--================ERP FULL LOADS===============--
+
+		PRINT '==================';
+		PRINT 'Loading ERP Tables';
+		PRINT '==================';
+
+		SET @start_time_source = GETDATE();
+
+
+		SET @start_time = GETDATE();
+		TRUNCATE TABLE bronze.erp_cust_az12
+		BULK INSERT bronze.erp_cust_az12
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_erp\CUST_AZ12.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD cust_az12 DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+
+		--SELECT * from bronze.erp_cust_AZ12
+
+
+
+		SET @start_time = GETDATE();
+		TRUNCATE TABLE bronze.erp_loc_a101
+		BULK INSERT bronze.erp_loc_a101
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_erp\LOC_A101.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD loc_a101 DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+		--SELECT * from bronze.erp_loc_a101
+
+
+
+
+		SET @start_time = GETDATE();
+		TRUNCATE TABLE bronze.erp_px_cat_g1v2
+		BULK INSERT bronze.erp_px_cat_g1v2
+		FROM 'C:\Users\wisar\Desktop\SQL\sql-data-warehouse-project\datasets\source_erp\PX_CAT_G1V2.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			TABLOCK
+			)
+		SET @end_time = GETDATE();
+		PRINT 'TIME TO LOAD px_cat_g1v2 DATA: ' + Cast(DATEDIFF(second, @start_time,@end_time) as NVARCHAR) + ' Seconds.'
+
+
+		SET @end_time_source = GETDATE();
+		SET @end_time_bronze_layer = GETDATE();
+
+		PRINT 'TIME TO LOAD ERP DATA: ' + Cast(DATEDIFF(second, @start_time_source,@end_time_source) as NVARCHAR) + ' Seconds.'
+
+		--SELECT * from bronze.erp_px_cat_g1v2
+
+		PRINT 'TIME TO LOAD BRONZE LAYER: ' + CAST(DATEDIFF(second, @start_time_bronze_layer,@end_time_bronze_layer) as NVARCHAR) + 'Seconds.'
+
+	END TRY
+
+	BEGIN CATCH
+		PRINT 'ERROR FOUND DURING LOADING BRONZE LAYER'
+		PRINT 'ERROR MESSAGE: ' + ERROR_MESSAGE();
+		PRINT 'ERROR NUMBER: ' + Cast(ERROR_NUMBER() as NVARCHAR);
+	END CATCH
+
+END
+
+
+GO
+
+--=======Display ALL BRONZE PROCEDURE FOR CHECKS=========----
+/*
+CREATE OR ALTER PROCEDURE bronze.display_bronze AS
+BEGIN
+	SELECT TOP 10 * from bronze.crm_cust_info 
+	SELECT TOP 10 * from bronze.crm_prd_info
+	SELECT TOP 10 * from bronze.crm_sales_details
+	SELECT TOP 10 * from bronze.erp_cust_AZ12
+	SELECT TOP 10 * from bronze.erp_loc_a101
+	SELECT TOP 10 * from bronze.erp_px_cat_g1v2
+END
+
+*/
