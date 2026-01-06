@@ -3,6 +3,11 @@ LOAD Stored Procedure Script:
 The purpose of this script is it transform (clean) the data in the bronze (raw data) layer
 and load it into the silver layer. this clean data will allow us to work in the gold layer and gain
 insights, as well as analyze the data.
+
+ETL (EXTRACT TRANSFORM LOAD) process.
+Truncates + inserts (cleansed) data from bronze to silver layer.
+
+usage : EXEC silver.load_silver
 */
 --==SILVER DATA LOADS (CLEANED)==--
 
