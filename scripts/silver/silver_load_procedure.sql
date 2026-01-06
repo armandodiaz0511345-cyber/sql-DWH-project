@@ -8,6 +8,8 @@ ETL (EXTRACT TRANSFORM LOAD) process.
 Truncates + inserts (cleansed) data from bronze to silver layer.
 
 usage : EXEC silver.load_silver
+
+stored procedure doesnt take parameters
 */
 --==SILVER DATA LOADS (CLEANED)==--
 
