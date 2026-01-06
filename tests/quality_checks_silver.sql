@@ -1,5 +1,17 @@
 /* NOTE: this is a compiling of all CHECKS AND TESTS done to check validity of data
-for the silver layer. in order from CRM to ERP.*/
+for the silver layer. in order from CRM to ERP.
+
+MAIN CHECKS:
+- NULL or dupes in PKs.
+- TRIMS
+- Data standardization
+- Data consistency between related fields (FKs)
+- Validation of Date ranges
+- removing unnecessary/invalid data.
+
+Use these checks after loading the silver layer.
+
+*/
 
 --======================================--
 --crm_cust_info
