@@ -15,7 +15,7 @@ USAGE:
 use this to directly query for analytics and reporting.
 
 */
-
+--NOTE: ALL CHECKS DONE TO DDL CAN BE FOUND IN THIS SAME FOLDER IN THE: ddl_gold_quality_checks.sql
 
 --==========================================================
 -- CREATE DIMENSION: gold.dim_customers
@@ -46,33 +46,6 @@ on ci.cst_key = cl.cid
 
 
 
---1-- CHECK FOR duplicates from joins
-/*
-SELECT cst_id, COUNT(*) FROM (
-
-[table]
-
-)t
-GROUP BY cst_id
-HAVING COUNT(*) > 1
-*/
---2--Gender data integration: 
-/*
-SELECT DISTINCT -- check fistinct
-ci.cst_gndr,
-ca.gen, -- note that this shows the gender of some people that previously showed an 'n/a' for gender
-
-CASE WHEN ci.cst_gndr !='n/a' THEN ci.cst_gndr
-	 ELSE Coalesce(ca.gen, 'n/a')
-END Gender
-
-FROM silver.crm_cust_info ci
-LEFT JOIN silver.erp_cust_az12 ca
-ON ci.cst_key = ca.cid
-LEFT JOIN silver.erp_loc_a101 cl
-on ci.cst_key = cl.cid
-Order by 1,2
-*/
 
 --==========================================================
 -- CREATE DIMENSION: gold.dim_products
@@ -98,24 +71,6 @@ FROM silver.crm_prd_info as pn
 LEFT JOIN silver.erp_px_cat_g1v2 pc
 ON pn.cat_subcat_id = pc.id
 WHERE pn.prd_end_dt IS NULL -- this filters out old, historical data, end date is also now not included in data since it will always be null
-
-
---CHECK for duplicates in prd_key (as we will be using it to connect to sales data so we cant have dupes)
-/*
-SELECT prd_key, COUNT(*) counts
-FROM (
-
-[Table]
-
-)t
-Group by prd_key
-HAVING  COUNT(*) >1
-*/
-
---SELECT * from silver.erp_px_cat_g1v2 -- used for checking correct joins
---select * from silver.crm_prd_info -- used for checking correct joins
---SELECT * from gold.dim_products -- final visual check
-
 
 --==========================================================
 -- CREATE FACT: gold.fact_sales
@@ -144,18 +99,9 @@ LEFT JOIN gold.dim_customers cs
 ON sd.sls_cust_id = cs.customer_id
 
 
-
 --select * from gold.dim_products
 --select * from gold.dim_customers
 --select * from gold.fact_sales
 --the number of diff keys, dates, and values is what tells that this
 -- is a FACT sheet, NOT a dimension.
----FINAL CHECK-- connect all fact sheets and dimensions through surrogate keys to 
-SELECT * from gold.fact_sales fs
-LEFT JOIN gold.dim_customers cs
-ON fs.customer_key = cs.customer_key
-LEFT JOIN gold.dim_products pr
-ON fs.product_key = pr.product_key
-WHERE cs.customer_key IS NULL or pr.product_key IS NULL
--- no results, so everything is matching perfectly.
--- this runs, meaning that all surrogate keys are connecting correctly
+
