@@ -1,14 +1,17 @@
-# sql-DWH-project
-Creating a modern Data Warehouse using SQL server (2022)! Including ETL processes, Data modeling, and data integration.
+# SQL-Modern-Medallion-DWH
+Creating a Modern Data Warehouse using SQL server (2022)! 
 
-Hello! This is a Project i'll be working on the expand on my SQL knowledge. I will be taking sample data and passing it through different ETL processes through three different layers (bronze, silver, and gold). Bronze will ingest the data, silver will clean the data, and gold will analyze and transform it based on business rules.
+This Data Warehouse uses the ***Medallion Architecture*** (**Bronze**- data ingestion, **Silver**- cleansing/standardization, **Gold**- Fully integrated data views w/ business logic)
 
-This document outlines the high-level architecture, data flow, and modeling strategies used for this project.
+designing and implementing everything by hand really lets you appreciate how much detail goes into getting clean data.
+This project took me around 12 hours of dedicated focus.
 
-Note: Unless explicitly stated, nothing seen in these projects was created or written with AI.
+**Note on AI Usage**: Unless explicitly stated, **NOTHING** seen in these projects was created or written by AI.
 I believe that to actually learn what im writing down, i have to do it with my own two hands.
-That being said, below is one of the two instances where AI was used. (not in creating the diagrams themselves (i have Dr.Baraa to thank for that), but rather the text and headings.
-the other instance is in the data catalog, which was tedious, and i felt fine using AI, as i wrote the entire DDL scripts by hand, so i was comfortable with what i fed into the machine.
+
+That being said, below is one of the two instances where AI was used (making the README file easier on the eyes).
+
+-the other instance is in the data catalog, which was tedious, and i felt fine using AI, as any DDL scripts being references was written by yours truly.
 ---
 
 ## 🏛️ Data Warehouse Architecture
