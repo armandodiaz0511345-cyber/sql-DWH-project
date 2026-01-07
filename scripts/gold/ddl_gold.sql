@@ -6,7 +6,7 @@ PURPOSE: The purpose of this script is to produce the gold layer of the data war
 
 gold layer includes: 
 -final processed data that is fully integrated
--the final dimensions and fact VIEWS of the data warehouse
+-the final dimensions and fact VIEWS of the data warehouse (entire star Schema)
 
 each view combines and transforms data from the silver layer to get a more complete picture
 of the data (customers, products and sales)
